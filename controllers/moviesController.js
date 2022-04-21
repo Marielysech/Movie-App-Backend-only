@@ -4,12 +4,18 @@ const movieModel = require('../models/Movie');
 const getAllTheMovies = async (req, res) => {
     try {
         const allTheMovies = await movieModel.find();
+<<<<<<< Updated upstream
         console.log(allTheMovies)
         // return res.send(allTheMovies)
         return res.status(200).json({
             success: true,
             movies: allTheMovies
           })
+=======
+        //return res.render('indexNoAuth.ejs', {movies : allTheMovies });
+        return res.send(allTheMovies)
+        
+>>>>>>> Stashed changes
     } catch (err) {
         console.log(err)
         }

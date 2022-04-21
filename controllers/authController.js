@@ -9,9 +9,9 @@ const passport = require('passport')
 
 initialize(passport);
 
-const renderIndexAuth = async (req, res) => {
-    res.render('indexAuth.ejs')
-}
+// const renderIndexAuth = async (req, res) => {
+//     res.redirect('/users')
+// }
 
 async function registerNewUser (req, res) { 
     try {
@@ -30,6 +30,7 @@ async function registerNewUser (req, res) {
     //     if(genre[i]) user.favGenres.push(genre[i])
     // }
         return res.redirect('/auth/login')
+        
     } catch (err) {
         console.log(err.message)
     }
@@ -42,13 +43,13 @@ async function loginUser (req, res) {
     }) (req, res);
 }
 
-const renderLoginPage = async (req,res) => {
-    return res.render('login.ejs')
-}
+// const renderLoginPage = async (req,res) => {
+//     return res.render('login.ejs')
+// }
 
-const renderRegisterPage = async (req,res) => {
-    return res.render('register.ejs')
-}
+// const renderRegisterPage = async (req,res) => {
+//     return res.render('register.ejs')
+// }
 
 
 // TODO
@@ -66,4 +67,4 @@ async function logoutUser (req, res) {
     
 }
 
-module.exports = {registerNewUser, loginUser, logoutUser, renderLoginPage,renderRegisterPage, renderIndexAuth}
+module.exports = {registerNewUser, loginUser, logoutUser}

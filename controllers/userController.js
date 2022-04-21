@@ -12,27 +12,6 @@ app.use(express.static("public"))
 
 app.use(express.json());
 
-/******************************************************** */
-// USED THIS FUCTION TO ADD AN USER
-
-// async function createOneUser (req, res) {
-//     try {
-//         const newUser = await userModel.create({
-//             name: "Viviana",
-//             username: "vivitt",
-//             email: "viviviyanez@gmail.com",
-//             password: "mypassword",
-//             favGenres: ["Drama", "Action"],
-//             favMovies: ["6258494746686f1c9c6989de", "6258494746686f1c9c6989d6" ]
-//         })
-        
-//         console.log(newUser);
-//         } catch (err) {
-//             console.log(err)
-//             }
-// }
-// createOneUser();
-// /************************************************************************ */
 
 
 async function getAllMoviesUser (req, res) {
@@ -40,9 +19,9 @@ async function getAllMoviesUser (req, res) {
     let favUserGenres = req.user.favGenres // this is an array
     if (favUserGenres.length>0) {
         let allMoviesFromFavGenres = await favUserGenres.map(elem => movieModel.find({category : elem}))
-        return res.render('indexAuth.ejs', {movies : allMoviesFromFavGenres });
+        return res.json({allTheMoviesFromFavGenres });
     }   const allTheMovies = await movieModel.find();
-        return res.render('indexAuth.ejs', {movies : allTheMovies });
+        return res.json({allTheMovies });
     } catch (err) {
         console.log(err)
         }
@@ -51,7 +30,7 @@ async function getAllMoviesUser (req, res) {
 async function getMoreInfo (req, res) {
     try {
         const movie = await movieModel.findOne({title: req.params.movie });
-            res.render('oneMovieInfo.ejs', {movie : movie})
+            return res.json({ movie });
         } catch (err) {
             console.log(err)
             }
@@ -62,7 +41,7 @@ async function getMoviesByRating (req, res) {
 
     const moviesByRating = await movieModel.find().sort({'rating': -1});
   
-    return res.render('indexAuth.ejs', {movies : moviesByRating });
+    return res.json({moviesByRating });
     } catch (err) {
         console.log(err)
         }
@@ -87,7 +66,7 @@ async function getFavorites (req, res) {
         const favUserMovies = user.favMovies
         console.log(favUserMovies)
         if (favUserMovies.length >0 ) {
-            return res.render('favorites.ejs', {movies : favUserMovies }); 
+            return res.json({favUserMovies});
         } else res.send('You have not favorites yet !')
     
     } catch (err) {
@@ -142,20 +121,20 @@ async function getMovieByFilter (req,res) {
         if (isNaN(filter)) {
             const filterCapital = firstLetterUpperCase(filter)
             let result = await movieModel.find({category: filterCapital}) 
-            console.log(result)
+            
                 if (result.length > 0) {
-                    return res.render('indexAuth.ejs', {movies : result, filter : filter });
-                    // return res.send(result);
+                   // return res.render('indexAuth.ejs', {movies : result, filter : filter });
+                   return res.json({result});
                 } const filteredMovie = await movieModel.find({title: {$regex: filterCapital }});
-                return res.render('indexAuth.ejs', {movies : filteredMovie, filter : filter });
+                return res.json({filteredMovie });
                 //   return res.send(filteredMovie);
         } else if (filter < 11) {
             const filteredMovie = await movieModel.find({rating: {$gte: filter}});
-            return res.render('indexAuth.ejs', {movies : filteredMovie, filter : filter });
-            // return res.send(filteredMovie);
+            //return res.render('indexAuth.ejs', {movies : filteredMovie, filter : filter });
+            return res.json({filteredMovie });
         } const filteredMovie = await movieModel.find({year: filter})
-            return res.render('indexAuth.ejs', {movies : filteredMovie, filter : filter });
-
+            //return res.render('indexAuth.ejs', {movies : filteredMovie, filter : filter });
+            return res.json({filteredMovie });
             // return res.send(filteredMovie);
     } catch (err) {
         console.log(err)
