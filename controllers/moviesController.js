@@ -6,7 +6,10 @@ const getAllTheMovies = async (req, res) => {
         const allTheMovies = await movieModel.find();
         console.log(allTheMovies)
         // return res.send(allTheMovies)
-        return res.render('indexNoAuth.ejs', {movies : allTheMovies });
+        return res.status(200).json({
+            success: true,
+            movies: allTheMovies
+          })
     } catch (err) {
         console.log(err)
         }
@@ -20,20 +23,31 @@ async function getMovieByFilter (req,res) {
             let result = await movieModel.find({category: filterCapital}) 
             console.log(result)
                 if (result.length > 0) {
-                    return res.render('indexNoAuth.ejs', {movies : result, filter : filter });
-                    // return res.send(result);
+                    return res.status(200).json({
+                        success: true,
+                        movies: result,
+                        filter: filter
+                      })
                 } const filteredMovie = await movieModel.find({title: {$regex: filterCapital }});
-                return res.render('indexNoAuth.ejs', {movies : filteredMovie, filter : filter });
-                //   return res.send(filteredMovie);
-        } else if (filter < 11) {
+                return res.status(200).json({
+                    success: true,
+                    movies: filteredMovie,
+                    filter: filter
+                  })        
+                } else if (filter < 11) {
             const filteredMovie = await movieModel.find({rating: {$gte: filter}});
-            return res.render('indexNoAuth.ejs', {movies : filteredMovie, filter : filter });
-            // return res.send(filteredMovie);
-        } const filteredMovie = await movieModel.find({year: filter})
-            return res.render('indexNoAuth.ejs', {movies : filteredMovie, filter : filter });
-
-            // return res.send(filteredMovie);
-    } catch (err) {
+            return res.status(200).json({
+                success: true,
+                movies: filteredMovie,
+                filter: filter
+              })                
+            } const filteredMovie = await movieModel.find({year: filter})
+            return res.status(200).json({
+                success: true,
+                movies: filteredMovie,
+                filter: filter
+              })           
+            } catch (err) {
         console.log(err)
     }
 };
