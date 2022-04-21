@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>logged in</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <a href="/users">Movies</a>
+  </h1>
+
+<ul>
+    <li><a href="/auth/logout">Logout</a></li>
+</ul>
+
+<a href="/users/rating"><button>Filter Movies by rating</button></a>
+<a href="/users/favorites"><button>Go to favorites</button></a>
+
+<form action="/users/search" method="POST">
+    <label for="search">Search bar</label>
+    <input type="text" id="search" name="search" placeholder="Search movies.." required>
+    
+    <span>
+        <button type="submit">Search</button>
+    </span>
+</form>
+
+<div>
+  <% for (let i=0; i<movies.length; i++) { %>
+    <span>
+      <span> 
+        <a href="/users/onemovie/<%=movies[i].title%>">
+        <img src="<%= movies[i].poster %>" alt="">
+
+      </a>
+        <form action="/users/favorites/<%= movies[i].title %>" method="POST">
+          <button type="submit">Add to favorites</button>
+          </form>
+      </span>
+    </span>
+ <% } %>
+  </body>
+</html>
+
+
+  
