@@ -48,8 +48,9 @@ async function registerNewUser (req, res) {
 async function loginUser (req, res, next) {
 
     passport.authenticate("local", function (err, user) {
+        console.log('this is my user' + user)
         if (err || !user) {
-          res.status(401).send("Unauthorized");
+          res.status(401).send("cannot come here");
         } else {
           req.login(user, function (err) {
             if (err) {
