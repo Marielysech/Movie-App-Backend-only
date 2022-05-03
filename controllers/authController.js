@@ -9,14 +9,10 @@ const passport = require('passport')
 
 initialize(passport);
 
-const renderIndexAuth = async (req, res) => {
-    res.render('indexAuth.ejs')
-}
-
 async function registerNewUser (req, res) { 
     try {
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
     
     const user = await userModel.create({
         name: req.body.name,
@@ -29,26 +25,42 @@ async function registerNewUser (req, res) {
     // for (let i=0; i<genre.length; i++) {
     //     if(genre[i]) user.favGenres.push(genre[i])
     // }
-        return res.redirect('/auth/login')
-    } catch (err) {
-        console.log(err.message)
+        return res.status(200).json({
+            email: user.email,
+            name: user.name,
+         });
+        }catch(error) {
+            console.log(error)
     }
 }
 
+
 async function loginUser (req, res) {
-    passport.authenticate('local',{
-        successRedirect: '/users',
-        failureRedirect: '/auth/login'
-    }) (req, res);
+
+    passport.authenticate("local", function (err, user) {
+        if (err || !user) {
+          res.status(401).send("Unauthorized");
+        } else {
+          req.login(user, function (err) {
+            if (err) {
+              return next(err);
+            }
+            res.status(200).json({
+              email: user.email,
+              name: user.name,
+            });
+          });
+        } (req, res);
+ })
 }
 
-const renderLoginPage = async (req,res) => {
-    return res.render('login.ejs')
-}
+// const renderLoginPage = async (req,res) => {
+//     return res.render('login.ejs')
+// }
 
-const renderRegisterPage = async (req,res) => {
-    return res.render('register.ejs')
-}
+// const renderRegisterPage = async (req,res) => {
+//     return res.render('register.ejs')
+// }
 
 
 // TODO
@@ -60,10 +72,10 @@ async function logoutUser (req, res) {
         if (err) {
         return next(err);
         }
-        res.redirect('/movies')
+        res.status(200).send("user disconnected");
     });
     
     
 }
 
-module.exports = {registerNewUser, loginUser, logoutUser, renderLoginPage,renderRegisterPage, renderIndexAuth}
+module.exports = {registerNewUser, loginUser, logoutUser}
