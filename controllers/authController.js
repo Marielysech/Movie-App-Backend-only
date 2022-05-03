@@ -10,6 +10,15 @@ const passport = require('passport')
 initialize(passport);
 
 async function registerNewUser (req, res) { 
+
+    const user = await userModel.findOne({ email: req.body.email });
+    if (user) {
+      return res.status(400).send({
+        message: `Email <${req.body.email}> already taken`,
+      });
+
+    } else {
+    
     try {
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -32,10 +41,11 @@ async function registerNewUser (req, res) {
         }catch(error) {
             console.log(error)
     }
+ }
 }
 
 
-async function loginUser (req, res) {
+async function loginUser (req, res, next) {
 
     passport.authenticate("local", function (err, user) {
         if (err || !user) {
@@ -50,9 +60,9 @@ async function loginUser (req, res) {
               name: user.name,
             });
           });
-        } (req, res);
- })
-}
+        }
+      })(req, res, next);
+    };
 
 // const renderLoginPage = async (req,res) => {
 //     return res.render('login.ejs')
