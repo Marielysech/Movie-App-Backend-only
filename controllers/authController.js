@@ -9,14 +9,19 @@ const passport = require('passport')
 
 initialize(passport);
 
-// const renderIndexAuth = async (req, res) => {
-//     res.redirect('/users')
-// }
-
 async function registerNewUser (req, res) { 
+
+    const user = await userModel.findOne({ email: req.body.email });
+    if (user) {
+      return res.status(400).send({
+        message: `Email <${req.body.email}> already taken`,
+      });
+
+    } else {
+    
     try {
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
     
     const user = await userModel.create({
         name: req.body.name,
@@ -29,19 +34,36 @@ async function registerNewUser (req, res) {
     // for (let i=0; i<genre.length; i++) {
     //     if(genre[i]) user.favGenres.push(genre[i])
     // }
-        return res.redirect('/auth/login')
-        
-    } catch (err) {
-        console.log(err.message)
+        return res.status(200).json({
+            email: user.email,
+            name: user.name,
+         });
+        }catch(error) {
+            console.log(error)
     }
+ }
 }
 
-async function loginUser (req, res) {
-    passport.authenticate('local',{
-        successRedirect: '/users',
-        failureRedirect: '/auth/login'
-    }) (req, res);
-}
+
+async function loginUser (req, res, next) {
+
+    passport.authenticate("local", function (err, user) {
+        console.log('this is my user' + user)
+        if (err || !user) {
+          res.status(401).send("cannot come here");
+        } else {
+          req.login(user, function (err) {
+            if (err) {
+              return next(err);
+            }
+            res.status(200).json({
+              email: user.email,
+              name: user.name,
+            });
+          });
+        }
+      })(req, res, next);
+    };
 
 // const renderLoginPage = async (req,res) => {
 //     return res.render('login.ejs')
@@ -61,7 +83,7 @@ async function logoutUser (req, res) {
         if (err) {
         return next(err);
         }
-        res.redirect('/movies')
+        res.status(200).send("user disconnected");
     });
     
     

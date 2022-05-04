@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 const app = express();
 const passport = require('passport')
 const session = require('express-session')
+const cors = require('cors')
+
 
 // routes
 const moviesRoutes = require('./routes/movies')
@@ -13,7 +15,7 @@ const authRoutes = require('./routes/auth')
 
 // server
 const portName = 'localhost';
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 
 
@@ -51,6 +53,29 @@ app.get('/', function(req,res) {return res.redirect('/movies')})
 app.use('/movies', moviesRoutes);
 app.use('/users', usersRoutes);
 app.use('/auth', authRoutes)
+
+/**
+ * ========== CORS SETUP ==========
+ */
+
+ app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
+  );
+  next();
+});
+
+app.use(
+  cors({
+    credentials: true,
+    allowedHeaders: ["Origin, X-Requested-With, Content-Type, Accept"],
+  })
+);
+app.set("trust proxy", 1);
 
 // // catch 404 and forward to error handler
 // app.use(function(req, res, next) {

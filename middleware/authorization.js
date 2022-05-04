@@ -3,13 +3,13 @@ const checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
       return next();
     }
-    return res.redirect('/auth/login')
+    return res.status(401)
   };
 
 
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect('/users')
+    return res.status(401)
   }
   next()
 }
