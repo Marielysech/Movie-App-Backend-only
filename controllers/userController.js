@@ -1,16 +1,13 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
-const collect = require('collect.js');
 
 // const passport = require('passeport')
 
 const userModel = require('../models/User')
 const movieModel = require('../models/Movie');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"))
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 
 
@@ -136,18 +133,11 @@ async function getMovieByFilter (req,res) {
     } catch (err) {
         console.log(err)
     }
-};
-
-const redirectToFilter = async (req,res) => {
-    let filter = req.body.search;
-    console.log(filter)
-    return res.redirect(`/users/${filter}`)
-}        
-       
+};   
 
 
 
-module.exports = {getAllMoviesUser, getMoviesByRating, getFavorites, toggleFavorites, getMovieByFilter,redirectToFilter, getMoreInfo }
+module.exports = {getAllMoviesUser, getMoviesByRating, getFavorites, toggleFavorites, getMovieByFilter, getMoreInfo }
 
 function firstLetterUpperCase(str) {
     let splitStr = str.toLowerCase().split(' ');

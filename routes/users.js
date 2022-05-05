@@ -14,7 +14,6 @@ router.get('/favorites', authorization.checkAuthenticated, userController.getFav
 
 router.post('/favorites/:movie', authorization.checkAuthenticated, userController.toggleFavorites)
 
-router.post('/search', authorization.checkAuthenticated,  userController.redirectToFilter);
 router.get('/:filter', authorization.checkAuthenticated, userController.getMovieByFilter)
 
 

@@ -53,13 +53,8 @@ async function getMovieByFilter (req,res) {
     }
 };
 
-const redirectToFilter = async (req,res) => {
-    let filter = req.body.search;
-    console.log(filter)
-    return res.redirect(`/movies/${filter}`)
-}
 
-module.exports = {getAllTheMovies, getMovieByFilter, redirectToFilter}
+module.exports = {getAllTheMovies, getMovieByFilter}
 
 
 function firstLetterUpperCase(str) {

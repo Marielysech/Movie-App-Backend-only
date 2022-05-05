@@ -1,11 +1,11 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const app = express();
 const passport = require('passport')
 const session = require('express-session')
 const cors = require('cors')
+const MongoStore = require("connect-mongo");
+
 
 
 // routes
@@ -14,42 +14,50 @@ const usersRoutes = require('./routes/users')
 const authRoutes = require('./routes/auth')
 
 // server
+const port = process.env.PORT || 4000
 const portName = 'localhost';
-const port = process.env.PORT || 4000;
 
 
 
 dotenv.config();
+const app = express();
 
-app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
 
 
 //passport
 app.use(passport.initialize())
 
+const sessionStore = new MongoStore({
+  mongoUrl: process.env.DB_SERVER,
+  collection: "sessions",
+});
 
 app.use(session({
   secret: process.env.SESSION_KEY,
   resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 60 * 60 * 1000 } //1hour
+  saveUninitialized: true,
+  store: sessionStore,
+  unset: "destroy",
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24,
+    sameSite: true,
+    secure: true
+  },
 }))
 
 app.use(passport.session())
 
-//app.use(logger('dev'));
-//app.use(cookieParser());
-
 
 mongoose.connect(process.env.DB_SERVER)
-.then(() => console.log("Conected to DB server"))
+.then(() => console.log("Connected to DB server"))
 .catch((err) => console.log(err));
 
+
 // routes
-app.get('/', function(req,res) {return res.redirect('/movies')})
+app.use('/', express.static('./public'))
 app.use('/movies', moviesRoutes);
 app.use('/users', usersRoutes);
 app.use('/auth', authRoutes)
@@ -76,26 +84,6 @@ app.use(
   })
 );
 app.set("trust proxy", 1);
-
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   next(createError(404));
-// });
-
-// // error handler
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-// //   // render the error page
-// //   res.status(err.status || 500);
-// //   res.render('error');
-// });
-
-
-
-//////////////////
 
 
 

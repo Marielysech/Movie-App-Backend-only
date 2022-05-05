@@ -12,6 +12,9 @@ router.post('/login', authorization.checkNotAuthenticated, authController.loginU
 
 router.get('/logout', authorization.checkAuthenticated, authController.logoutUser);
 
+router.get("/getuser", authController.getUser);
+
+
 
 
 

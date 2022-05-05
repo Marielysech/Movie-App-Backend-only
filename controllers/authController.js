@@ -1,6 +1,3 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
 const userModel = require('../models/User')
 const bcrypt = require('bcrypt')
 const initialize = require('../config/passport-config')
@@ -82,4 +79,17 @@ async function logoutUser (req, res) {
     
 }
 
-module.exports = {registerNewUser, loginUser, logoutUser}
+const getUser = (req, res) => {
+  res.status(200);
+
+  if (!req.isAuthenticated()) {
+    res.send();
+  } else {
+    res.json({
+      email: req.user.email,
+      name: req.user.name,
+    });
+  }
+};
+
+module.exports = {registerNewUser, loginUser, logoutUser, getUser}
