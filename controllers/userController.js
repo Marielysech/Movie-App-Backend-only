@@ -63,6 +63,7 @@ async function getFavorites (req, res) {
     try {
         let userID = req.user._id;
         const user = await userModel.findOne({_id: userID}).populate('favMovies');
+        console.log(user)
         const favUserMovies = user.favMovies
         console.log(favUserMovies)
         if (favUserMovies.length >0 ) {
@@ -85,34 +86,30 @@ async function getFavorites (req, res) {
 //         }
 //     };
 
-async function addToFavorites (req, res) {
+async function toggleFavorites (req, res) {
     try {
     let userId = req.user._id;
     let movie = await movieModel.findOne({title: req.params.movie})
     let favmovie = await userModel.findOne({favMovies : movie._id})
+    console.log(favmovie)
     if(favmovie) {
-        return res.redirect('/users')
+        await userModel.updateOne({_id: userId}, { $pull: { favMovies: movie._id }})
+        console.log(req.params.movie + 'removed from fav')
+        return res.status(200)
     }
         await userModel.updateOne({_id: userId}, { $push: { favMovies: movie._id }})
-        console.log(req.user)   
-        return res.redirect('/users')
+        console.log(req.params.movie + 'added to fav' )
+        console.log(req.user)
+        return res.status(200).json({
+              title: req.params.movie ,
+              id: movie._id,
+            });
     } catch (err) {
         console.log(err)
         }
     }
     
-    
-async function removeFromFavorites (req, res) {
-    try {
-        let userId = req.user._id;
-        let movie = await movieModel.findOne({title: req.params.movie})
-        await userModel.updateOne({_id: userId}, { $pull: { favMovies: movie._id }})
-        res.redirect('/users/favorites')
-    
-        } catch (err) {
-            console.log(err)
-            }
-        }
+
 
 
 async function getMovieByFilter (req,res) {
@@ -150,7 +147,7 @@ const redirectToFilter = async (req,res) => {
 
 
 
-module.exports = {getAllMoviesUser, getMoviesByRating, getFavorites, addToFavorites, removeFromFavorites, getMovieByFilter,redirectToFilter, getMoreInfo }
+module.exports = {getAllMoviesUser, getMoviesByRating, getFavorites, toggleFavorites, getMovieByFilter,redirectToFilter, getMoreInfo }
 
 function firstLetterUpperCase(str) {
     let splitStr = str.toLowerCase().split(' ');

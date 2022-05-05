@@ -48,7 +48,6 @@ async function registerNewUser (req, res) {
 async function loginUser (req, res, next) {
 
     passport.authenticate("local", function (err, user) {
-        console.log('this is my user' + user)
         if (err || !user) {
           res.status(401).send("cannot come here");
         } else {
@@ -56,22 +55,15 @@ async function loginUser (req, res, next) {
             if (err) {
               return next(err);
             }
+            console.log('user is connected' + user)
             res.status(200).json({
               email: user.email,
-              name: user.name,
+              name: user.name
             });
           });
         }
       })(req, res, next);
     };
-
-// const renderLoginPage = async (req,res) => {
-//     return res.render('login.ejs')
-// }
-
-// const renderRegisterPage = async (req,res) => {
-//     return res.render('register.ejs')
-// }
 
 
 // TODO
@@ -83,6 +75,7 @@ async function logoutUser (req, res) {
         if (err) {
         return next(err);
         }
+        console.log('user is disconnected')
         res.status(200).send("user disconnected");
     });
     
