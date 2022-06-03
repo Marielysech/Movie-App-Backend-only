@@ -7,7 +7,7 @@
 <p align="center">
   <b>Some Links:</b><br>
   <a href="https://movie-app-marielyse.herokuapp.com">App access</a> |
-  <a href="[https://github.com/Marielysech/Movie-App-Backend-only](https://github.com/Marielysech/Movie-app-front-end)">Front End Repository</a> 
+  <a href="https://github.com/Marielysech/Movie-app-front-end">Front End Repository</a> 
 </p>
 
 <p align="center">
